@@ -2,44 +2,240 @@ import React, { useState } from 'react';
 
 function App() {
   const [cadena, setCadena] = useState('');
+  const [estado, setEstado] = useState('q0');
   const [resultados, setResultados] = useState([]);
 
-  const validarCadena = (cadena) => {
-    const patron = /^((A[G-Z][A-Z])|(B[A-Z]+[A-Z])|(C[A-Y][A-Z]))-(?!000)[0-9]{3}-[A-ZA-Z]$/;
-    return patron.test(cadena);
+  const transiciones = {
+    q0: {
+      A: 'q1',
+      B: 'q12',
+      C: 'q13',
+    },
+    q1: {
+      G:'q2',
+      H:'q2',
+      I:'q2',
+      J:'q2',
+      K:'q2',
+      L:'q2',
+      M:'q2',
+      N:'q2',
+      Ñ:'q2',
+      O:'q2',
+      P:'q2',
+      Q:'q2',
+      R:'q2',
+      S:'q2',
+      T:'q2',
+      U:'q2',
+      V:'q2',
+      W:'q2',
+      X:'q2',
+      Y:'q2',
+      Z:'q2',
+    },
+    q12: {
+      A:'q2',
+      B:'q2',
+      C:'q2',
+      D:'q2',
+      E:'q2',
+      F:'q2',
+      G:'q2',
+      H:'q2',
+      I:'q2',
+      J:'q2',
+      K:'q2',
+      L:'q2',
+      M:'q2',
+      N:'q2',
+      Ñ:'q2',
+      O:'q2',
+      P:'q2',
+      Q:'q2',
+      R:'q2',
+      S:'q2',
+      T:'q2',
+      U:'q2',
+      V:'q2',
+      W:'q2',
+      X:'q2',
+      Y:'q2',
+      Z:'q2',
+    },
+    q13: {
+      A:'q2',
+      B:'q2',
+      C:'q2',
+      D:'q2',
+      E:'q2',
+      F:'q2',
+      G:'q2',
+      H:'q2',
+      I:'q2',
+      J:'q2',
+      K:'q2',
+      L:'q2',
+      M:'q2',
+      N:'q2',
+      Ñ:'q2',
+      O:'q2',
+      P:'q2',
+      Q:'q2',
+      R:'q2',
+      S:'q2',
+      T:'q2',
+      U:'q2',
+      V:'q2',
+      W:'q2',
+      X:'q2',
+      Y:'q2',
+    },
+    q2: {
+      A:'q3',
+      B:'q3',
+      C:'q3',
+      D:'q3',
+      E:'q3',
+      F:'q3',
+      G:'q3',
+      H:'q3',
+      I:'q3',
+      J:'q3',
+      K:'q3',
+      L:'q3',
+      M:'q3',
+      N:'q3',
+      Ñ:'q3',
+      O:'q3',
+      P:'q3',
+      Q:'q3',
+      R:'q3',
+      S:'q3',
+      T:'q3',
+      U:'q3',
+      V:'q3',
+      W:'q3',
+      X:'q3',
+      Y:'q3',
+      Z:'q3'
+    },
+    q3: {
+      "-":'q4'
+    },
+    q4: {
+      0:'q5',
+      1:'q10',
+      2:'q10',
+      3:'q10',
+      4:'q10',
+      5:'q10',
+      6:'q10',
+      7:'q10',
+      8:'q10',
+      9:'q10',
+    },
+    q5: {
+      0:'q6',
+      1:'q11',
+      2:'q11',
+      3:'q11',
+      4:'q11',
+      5:'q11',
+      6:'q11',
+      7:'q11',
+      8:'q11',
+      9:'q11',
+    },
+    q6: {
+      0:'q7',
+      1:'q7',
+      2:'q7',
+      3:'q7',
+      4:'q7',
+      5:'q7',
+      6:'q7',
+      7:'q7',
+      8:'q7',
+      9:'q7',
+    },
+    q10: {
+      0:'q11',
+      1:'q11',
+      2:'q11',
+      3:'q11',
+      4:'q11',
+      5:'q11',
+      6:'q11',
+      7:'q11',
+      8:'q11',
+      9:'q11',
+    },
+    q11: {
+      0:'q7',
+      1:'q7',
+      2:'q7',
+      3:'q7',
+      4:'q7',
+      5:'q7',
+      6:'q7',
+      7:'q7',
+      8:'q7',
+      9:'q7',
+    },
+    q7: {
+      "-":'q8',
+    },
+    q8: {
+      A:'q9',
+      B:'q9',
+      C:'q9',
+      D:'q9',
+      E:'q9',
+      F:'q9',
+      G:'q9',
+      H:'q9',
+      I:'q9',
+      J:'q9',
+      K:'q9',
+      L:'q9',
+      M:'q9',
+      N:'q9',
+      Ñ:'q9',
+      O:'q9',
+      P:'q9',
+      Q:'q9',
+      R:'q9',
+      S:'q9',
+      T:'q9',
+      U:'q9',
+      V:'q9',
+      W:'q9',
+      X:'q9',
+      Y:'q9',
+      Z:'q9'
+    },
   };
 
   const validarCadenaYMostrarResultado = () => {
     setResultados([]);
+    let estadoActual = estado; // Mantener el estado actual
 
-    if (validarCadena(cadena)) {
-      for (let i = 0; i < cadena.length; i++) {
-        const caracter = cadena[i];
+    for (let i = 0; i < cadena.length; i++) {
+      const caracter = cadena[i].toUpperCase();
 
-        let resultado = '';
-
-        if (caracter.toLowerCase() === 'salir') {
-          window.close();
-          return;
-        }
-
-        if (i < 3 && /[A-Z]/.test(caracter)) {
-          resultado = `${caracter} es válido (letra)`;
-        } else if (i >= 4 && i <= 6 && /[0-9]/.test(caracter)) {
-          resultado = `${caracter} es válido (número)`;
-        } else if ((i === 3 || i === 7) && caracter === '-') {
-          resultado = `${caracter} es válido (guión)`;
-        } else if (i === 8 && /[A-Z]/i.test(caracter)) {
-          resultado = `${caracter} es válido (letra)`;
-        } else {
-          resultado = `${caracter} no es válido`;
-        }
-
+      if (transiciones[estadoActual] && transiciones[estadoActual][caracter]) {
+        estadoActual = transiciones[estadoActual][caracter]; // Actualizar el estado
+        const resultado = `${caracter} es válido, estado: ${estadoActual}`;
         setResultados((prevResultados) => [...prevResultados, resultado]);
+      } else {
+        const resultado = `${caracter} no es válido, estado: ${estadoActual}`;
+        setResultados((prevResultados) => [...prevResultados, resultado]);
+        break; // Detener la validación en caso de error
       }
-    } else {
-      setResultados(['Cadena no válida']);
     }
+
+    setEstado(estadoActual); // Actualizar el estado final
   };
 
   return (
